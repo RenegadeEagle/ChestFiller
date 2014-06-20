@@ -27,14 +27,20 @@ public class PlayerInteractListener implements Listener {
         if(event.getAction() == Action.RIGHT_CLICK_BLOCK){
             if(event.getClickedBlock().getType() == Material.CHEST){
                 if(event.getClickedBlock().getState() instanceof Chest){
-                    Chest chest = (Chest) event.getClickedBlock().getState();
-                    chest.getInventory().setContents(InventoryStringDeSerializer.StringToInventory(decideOnInventory()).getContents());
-
+                    if(!instance.getHasBeenLooted().contains(event.getClickedBlock().getLocation())) {
+                        Chest chest = (Chest) event.getClickedBlock().getState();
+                        chest.getInventory().setContents(InventoryStringDeSerializer.StringToInventory(decideOnInventory()).getContents());
+                        instance.getHasBeenLooted().add(chest.getLocation());
+                    } else if(instance.getHasBeenLooted().contains(event.getClickedBlock()) && instance.getConfig().getBoolean("loot_once") == true) {
+                        return;
+                    } else if(instance.getHasBeenLooted().contains(event.getClickedBlock()) && instance.getConfig().getBoolean("loot_once") == false){
+                        Chest chest = (Chest) event.getClickedBlock().getState();
+                        chest.getInventory().setContents(InventoryStringDeSerializer.StringToInventory(decideOnInventory()).getContents());
+                    }
                 }
             }
         }
     }
-
     public String decideOnInventory(){
         Random random = new Random();
         int selection = random.nextInt(instance.getConfig().getConfigurationSection("inventories").getKeys(false).size());

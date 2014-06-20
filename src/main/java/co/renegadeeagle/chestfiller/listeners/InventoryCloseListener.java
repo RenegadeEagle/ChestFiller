@@ -19,7 +19,6 @@ public class InventoryCloseListener implements Listener {
     }
     @EventHandler
     public void onInventoryCloseEvent(InventoryCloseEvent event){
-        System.out.println("SWAG");
         if(event.getPlayer() instanceof Player){
             Player player = ((Player) event.getPlayer());
             if(instance.getCreatingAChest().containsKey(event.getPlayer().getName())) {
@@ -28,7 +27,6 @@ public class InventoryCloseListener implements Listener {
                 instance.saveConfig();
                 instance.getCreatingAChest().remove(event.getPlayer().getName());
                 player.sendMessage(ChatColor.GRAY+"Chest saved.");
-
             }
         }
     }

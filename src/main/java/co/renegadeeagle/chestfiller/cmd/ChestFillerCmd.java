@@ -1,6 +1,7 @@
 package co.renegadeeagle.chestfiller.cmd;
 
 import co.renegadeeagle.chestfiller.ChestFiller;
+import co.renegadeeagle.chestfiller.util.InventoryStringDeSerializer;
 import co.renegadeeagle.chestfiller.util.StringUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -36,6 +37,24 @@ public class ChestFillerCmd implements CommandExecutor {
                             instance.saveConfig();
                             player.openInventory(inventory);
 
+                        }
+                        if(args[0].equalsIgnoreCase("amount")){
+                            player.sendMessage(ChatColor.GRAY+"There are currently "+ChatColor.GREEN+instance.getConfig().getInt("amount_of_inventories")+" inventories!");
+                        }
+                    }
+                    if(args.length == 2){
+                        if(args[0].equalsIgnoreCase("edit")){
+                            try{
+                                int id = Integer.parseInt(args[1]);
+                                if(instance.getConfig().contains("inventories."+id)){
+                                    Inventory inventory = Bukkit.createInventory(null, 27, ChatColor.RED+"Editing - Inventory "+id);
+                                    inventory.setContents(InventoryStringDeSerializer.StringToInventory(instance.getConfig().getString("inventories."+id)).getContents());
+                                    player.openInventory(inventory);
+                                    instance.getCreatingAChest().put(player.getName(), id);
+                                }
+                            }catch(Exception e){
+                                player.sendMessage(ChatColor.RED+"That is not a valid inventory to change! Usage: /chestfiller edit number");
+                            }
                         }
                     }
                 }
